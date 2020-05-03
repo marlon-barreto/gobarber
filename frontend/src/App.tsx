@@ -1,21 +1,21 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import GlobalStyle from './styles/global';
 
-import SignIn from './pages/SignIn';
-// import SignUp from './pages/SignUp';
-
 // Objeto de contexto geral da aplicacao
-import { AuthProvider } from './hooks/AuthContext';
+import AppProvider from './hooks';
 
-import ToastContainer from './components/ToastContainer';
+import Routes from './routes';
 
 const App: React.FC = () => (
   <>
-    <AuthProvider>
-      <SignIn />
-    </AuthProvider>
-    <ToastContainer />
-    <GlobalStyle />
+    <BrowserRouter>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
+
+      <GlobalStyle />
+    </BrowserRouter>
   </>
 );
 

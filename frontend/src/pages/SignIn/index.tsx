@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 import { FormHandles } from '@unform/core';
 
@@ -10,14 +11,15 @@ import getValidationErrors from '../../utils/getValidationErros';
 import loggoImg from '../../assets/logo.svg';
 
 // Stylo
-import { Container, Content, Background } from './styles';
+import { Container, Content, AnimationContainer, Background } from './styles';
 
 // Componentes
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 // Objeto de contexto.
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 interface SingInFornData {
   email: string;
@@ -29,6 +31,9 @@ const SignIn: React.FC = () => {
 
   // Variavel de contexto
   const { signIn } = useAuth();
+
+  const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SingInFornData) => {
@@ -48,46 +53,58 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        signIn({
+        await signIn({
           email: data.email,
           password: data.password,
         });
+
+        // redireciona para tela incial
+        history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
           formRef.current?.setErrors(errors);
+
+          return;
         }
 
         // disparar um toast
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticacao',
+          description: 'Ocorreu um erro ao fazer login, cheque as credenciais',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast, history],
   );
 
   return (
     <Container>
       <Content>
-        <img src={loggoImg} alt="Gobarber" />
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faca seu login</h1>
+        <AnimationContainer>
+          <img src={loggoImg} alt="Gobarber" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faca seu login</h1>
 
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-          />
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+            />
 
-          <Button type="submit">Entrar</Button>
+            <Button type="submit">Entrar</Button>
 
-          <a href="forgot">Esqueci minha Senha</a>
-        </Form>
+            <a href="forgot">Esqueci minha Senha</a>
+          </Form>
 
-        <a href="xxxx">
-          <FiLogIn />
-          Criar conta
-        </a>
+          <Link to="/signup">
+            <FiLogIn />
+            Criar conta
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
