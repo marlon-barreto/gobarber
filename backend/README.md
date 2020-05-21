@@ -37,6 +37,9 @@ yarn add @react-navigation/stack
  $ yarn test
 ```
 
+Executado um teste especifico
+yarn test src/modules/users/services/SendForgotPasswordEmailService.spec.ts
+
 Launches the test
 ## Learn More
 
