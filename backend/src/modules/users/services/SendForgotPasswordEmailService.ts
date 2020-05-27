@@ -5,6 +5,8 @@ import IUsersRepository from '../repositories/IUsersRepository';
 import IUserTokensRepository from '../repositories/IUserTokensRepository';
 // import User from '../infra/typeorm/entities/User';
 
+import path from 'path';
+
 interface IRequest {
   email: string;
 }
@@ -31,10 +33,30 @@ class SendForgotPasswordEmailService {
 
     const {token} = await this.userTokensRepository.generate(user.id);
 
-    await this.mailProvider.sendMail(
-      email,
-      `Pedido de recuperacao de senha recebido: ${token}`,
-    );
+
+    const forgotPassWordTemplate = path.resolve(
+      __dirname,
+      '..',
+      'views',
+      'forgot_password.hbs',
+      );
+
+
+    await this.mailProvider.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[GoBarber] Recuperacao de senha',
+      templateData:{
+        file: forgotPassWordTemplate,
+        vaiables: {
+          name: user.name,
+          token,
+          link:`http://localhost:3000/reset_password?token${token}`,
+        },
+      },
+    });
   }
 }
 
