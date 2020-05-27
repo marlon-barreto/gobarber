@@ -34,8 +34,12 @@ yarn add @react-navigation/stack
  $ yarn install
  $ yarn android
  $ yarn ios
- $ yarn test
+ $ yarn dev:server
 ```
+
+Executado Typeorm
+yarn typeorm migration:create -n CreatUserTokens
+yarn typeorm migration:run
 
 Executado um teste especifico
 yarn test src/modules/users/services/SendForgotPasswordEmailService.spec.ts

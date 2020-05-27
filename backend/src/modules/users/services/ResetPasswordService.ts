@@ -19,7 +19,7 @@ class ResetPasswordService {
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
-    @inject('UserTokensRepository')
+    @inject('UsersTokensRepository')
     private userTokensRepository: IUserTokensRepository,
 
     @inject('HashProvider')
@@ -46,7 +46,6 @@ class ResetPasswordService {
 
     //Verifica se hora tem diferença de 2 horas.
     if (isAfter(Date.now(),compareDate)) {
-      console.log('treste');
       throw new AppError('token expired.');
     }
 
